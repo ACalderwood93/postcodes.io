@@ -3,7 +3,7 @@
 const {
   setupSupportTables,
   setupOutcodeTable,
-} = require("../app/lib/setup.js");
+} = require("../dist/app/lib/setup.js");
 
 const main = async () => {
   try {

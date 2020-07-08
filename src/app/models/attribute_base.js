@@ -29,7 +29,7 @@ function AttributeBase(relation, schema = {}, indexes = []) {
 inherits(AttributeBase, Base);
 
 AttributeBase.prototype.seedData = function(callback) {
-  const data = require(`../../data/${this.relation}.json`);
+  const data = require(`../../../data/${this.relation}.json`);
   const inserts = Object.keys(data)
     .map(code => [code, data[code]])
     .map(values => [

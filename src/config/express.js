@@ -18,7 +18,7 @@ module.exports = (app, config) => {
   app.set("view engine", "ejs");
   if (config.serveStaticAssets) {
     app.use(favicon("public/favicon.ico"));
-    app.use(express.static(join(__dirname, "../public")));
+    app.use(express.static(join(__dirname, "../../public")));
   }
   const { httpHeaders } = config;
   if (httpHeaders) {

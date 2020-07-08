@@ -2,28 +2,15 @@
 
 const { inherits } = require("util");
 const { join } = require("path");
-const async = require("async");
-const { assert } = require("chai");
 const randomString = require("random-string");
-const configFactory = require("../../config/config");
+const configFactory = require("../../dist/config/config");
 const config = configFactory();
 const AttributeBaseSuite = require("./attribute_base.suite.js");
 
-const postcodesioApplication = cfg => require("../../app")(cfg || config);
+const postcodesioApplication = (cfg) => require("../../dist/app")(cfg || config);
 
 // Load models
-const {
-  Base,
-  AttributeBase,
-  Postcode,
-  TerminatedPostcode,
-} = require("../../app/models/index.js");
-
-const CSV_INDEX = Object.freeze({
-  postcode: 2,
-  northings: 10,
-  eastings: 9,
-});
+const { Base, Postcode, TerminatedPostcode } = require("../../dist/app/models/index.js");
 
 // Infers columns schema from columnData
 const inferSchemaData = columnData => {
@@ -209,13 +196,13 @@ module.exports = {
   AttributeBaseSuite,
 
   // Libs
-  unaccent: require("../../app/lib/unaccent.js"),
-  errors: require("../../app/lib/errors.js"),
-  string: require("../../app/lib/string.js"),
-  timeout: require("../../app/lib/timeout.js"),
+  unaccent: require("../../dist/app/lib/unaccent.js"),
+  errors: require("../../dist/app/lib/errors.js"),
+  string: require("../../dist/app/lib/string.js"),
+  timeout: require("../../dist/app/lib/timeout.js"),
 
   // Load in models
-  ...require("../../app/models/index.js"),
+  ...require("../../dist/app/models/index.js"),
 
   seedPaths: {
     customRelation: join(__dirname, "../seed/customRelation.csv"),

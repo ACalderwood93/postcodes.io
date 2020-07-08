@@ -4,7 +4,7 @@ const { inherits } = require("util");
 const Pc = require("postcode");
 const { series } = require("async");
 const { Base, populateLocation, csvExtractor } = require("./base");
-const extractOnspdVal = csvExtractor(require("../../data/onspd_schema.json"));
+const extractOnspdVal = csvExtractor(require("../../../data/onspd_schema.json"));
 const QueryStream = require("pg-query-stream");
 const { defaults } = require("../../config/config.js")();
 const { InvalidGeolocationError } = require("../lib/errors");
@@ -697,13 +697,13 @@ Postcode.prototype._setupTable = function(filepath, callback) {
 };
 
 Postcode.prototype.seedPostcodes = function(filepath, callback) {
-  const pcts = require("../../data/pcts.json");
-  const lsoa = require("../../data/lsoa.json");
-  const msoa = require("../../data/msoa.json");
-  const nhsHa = require("../../data/nhsHa.json");
-  const regions = require("../../data/regions.json");
-  const countries = require("../../data/countries.json");
-  const european_registers = require("../../data/european_registers.json");
+  const pcts = require("../../../data/pcts.json");
+  const lsoa = require("../../../data/lsoa.json");
+  const msoa = require("../../../data/msoa.json");
+  const nhsHa = require("../../../data/nhsHa.json");
+  const regions = require("../../../data/regions.json");
+  const countries = require("../../../data/countries.json");
+  const european_registers = require("../../../data/european_registers.json");
 
   const ONSPD_COL_MAPPINGS = Object.freeze([
     { column: "postcode", method: row => row.extract("pcds") },

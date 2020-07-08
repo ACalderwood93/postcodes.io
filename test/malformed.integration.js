@@ -2,7 +2,7 @@
 
 const net = require("net");
 const { assert } = require("chai");
-const app = require("../server");
+const app = require("../src/server");
 
 describe("Malformed request", () => {
   it("returns a 400 response in node 6 and greater", done => {

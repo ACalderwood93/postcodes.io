@@ -22,7 +22,7 @@ const {
   Place,
   TerminatedPostcode,
   Ced,
-} = require("../../app/models/index.js");
+} = require("../../dist/app/models/index.js");
 
 /**
  * Clears the test database

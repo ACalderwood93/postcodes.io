@@ -10,8 +10,11 @@ describe("Pages routes", () => {
     it("should return 200", async () => {
       await request(app)
         .get("/")
+        .expect(200)
         .expect("Content-Type", /html/)
-        .expect(200);
+        .then(function(res) {
+          console.log(res);
+        });
     });
   });
 

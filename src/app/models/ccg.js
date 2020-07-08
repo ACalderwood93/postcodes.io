@@ -21,7 +21,7 @@ inherits(Model, AttributeBase);
 // Override Seed Data Method
 Model.prototype.seedData = function (callback) {
   const self = this;
-  const dataPath = path.join(__dirname, "../../data/");
+  const dataPath = path.join(__dirname, "../../../data/");
   const dataObject = JSON.parse(fs.readFileSync(path.join(dataPath, self.relation + ".json")));
   const insertQueue = [];
   

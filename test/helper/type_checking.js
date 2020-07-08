@@ -3,7 +3,7 @@
 const {
   Postcode,
   TerminatedPostcode,
-} = require("../../app/models/index.js");
+} = require("../../dist/app/models/index.js");
 const { assert } = require("chai");
 
 // Retrieve object size

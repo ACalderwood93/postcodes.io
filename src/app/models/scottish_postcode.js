@@ -5,10 +5,10 @@ const Postcode = require("postcode");
 const { series } = require("async");
 const { Base, csvExtractor } = require("./base");
 const smallUserExtractor = csvExtractor(
-  require("../../data/spd_small_schema.json")
+  require("../../../data/spd_small_schema.json")
 );
 const largeUserExtractor = csvExtractor(
-  require("../../data/spd_large_schema.json")
+  require("../../../data/spd_large_schema.json")
 );
 
 const TABLE_NAME = "scottish_postcodes";

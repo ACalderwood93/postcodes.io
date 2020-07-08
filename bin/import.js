@@ -24,9 +24,9 @@ const {
   Postcode,
   TerminatedPostcode,
   Outcode,
-} = require("../app/models/index.js");
-const { toTempName, setupWithTableSwap } = require("../app/models/base.js");
-const { SUPPORT_TABLES, setupSupportTables } = require("../app/lib/setup.js");
+} = require("../dist/app/models/index.js");
+const { toTempName, setupWithTableSwap } = require("../dist/app/models/base.js");
+const { SUPPORT_TABLES, setupSupportTables } = require("../dist/app/lib/setup.js");
 
 if (!sourceFile) {
 	console.log("Aborting Import. No source file specified");

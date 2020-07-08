@@ -5,7 +5,7 @@ const {
   setupSupportTables,
   setupOutcodeTable,
   SUPPORT_TABLES,
-} = require("../app/lib/setup.js");
+} = require("../src/app/lib/setup.js");
 const { series, parallel } = require("async");
 const {
   listDatabaseRelations,

@@ -5,7 +5,7 @@ const async = require("async");
 const { assert } = require("chai");
 const parse = require('csv-parse/lib/sync');
 const helper = require("./helper/index");
-const { defaults } = require("../config/config")();
+const { defaults } = require("../src/config/config")();
 const searchDefaults = defaults.placesSearch;
 const { Place } = helper;
 

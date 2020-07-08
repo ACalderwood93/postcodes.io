@@ -2,7 +2,7 @@
  * PG helper methods
  */
 
-const { Base } = require("../../app/models/index.js");
+const { Base } = require("../../dist/app/models/index.js");
 
 // Credit: https://www.peterbe.com/plog/select-all-relations-in-postgresql
 const databaseRelationsQuery = `

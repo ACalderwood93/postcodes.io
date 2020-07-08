@@ -67,6 +67,8 @@
     "mocha"         : true,     // Mocha
     "node"          : true,    // Node.js
 
+    "esversion": 6,
+
     // Custom Globals
     "globals"       : {}        // additional predefined global variables
 }
