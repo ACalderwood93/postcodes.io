@@ -5,7 +5,7 @@ const async = require("async");
 const { assert } = require("chai");
 const parse = require('csv-parse/lib/sync');
 const helper = require("./helper/index");
-const { defaults } = require("../src/config/config")();
+const { defaults } = require("../dist/config/config")();
 const searchDefaults = defaults.placesSearch;
 const { Place } = helper;
 
@@ -120,7 +120,7 @@ describe("Place Model", () => {
 		});
 		it ("sets limit to default maximum if it's greater than it", done => {
 			const searchDefaultMax = searchDefaults.limit.MAX;
-			searchDefaults.limit.MAX = 5
+			searchDefaults.limit.MAX = 5;
 			Place.search({ 
 				name: "b",
 			 	limit: 1000

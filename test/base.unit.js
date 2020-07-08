@@ -2,7 +2,7 @@
 
 const helper = require("./helper");
 const { assert } = require("chai");
-const { Base, csvExtractor } = require("../src/app/models/base.js");
+const { Base, csvExtractor } = require("../dist/app/models/base.js");
 const spdSchemaLarge = require("../data/spd_large_schema.json");
 const spdSchemaSmall = require("../data/spd_small_schema.json");
 const onspdSchema = require("../data/onspd_schema.json");
