@@ -11,7 +11,7 @@
     "copy": "ts-node tools/copy",
     "semantic-release": "semantic-release",
     "build": "npm-run-all clean tsc copy",
-    "test": "npm run test:create && npm run nyc_mocha",
+    "test": "npm run build && npm run test:create && npm run nyc_mocha",
     "nyc_mocha": "NODE_ENV=test NO_RELOAD_DB=true nyc mocha",
     "coverage": "codecov",
     "start": "node dist/server.js",
