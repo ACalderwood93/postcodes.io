@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-  Base: require("./base.js").Base,
+  Base: require("./base").Base,
   AttributeBase: require("./attribute_base"),
   Postcode: require("./postcode"),
   District: require("./district"),

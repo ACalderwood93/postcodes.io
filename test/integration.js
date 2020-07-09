@@ -83,7 +83,7 @@ describe("Serve static assets", () => {
     config.serveStaticAssets = true;
     const newApp = postcodesioApplication(config);
     await request(newApp)
-      .get("/js/app.js")
+      .get("/js/app.ts")
       .expect(200);
   });
   it("does not serve public/ when disabled", async () => {
@@ -91,7 +91,7 @@ describe("Serve static assets", () => {
     config.serveStaticAssets = false;
     const newApp = postcodesioApplication(config);
     const response = await request(newApp)
-      .get("/js/app.js")
+      .get("/js/app.ts")
       .expect(404);
   });
 });

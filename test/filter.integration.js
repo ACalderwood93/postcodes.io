@@ -3,7 +3,7 @@
 const async = require("async");
 const { assert, expect } = require("chai");
 const request = require("supertest");
-const helper = require("./helper/index.js");
+const helper = require("./helper/index");
 const app = helper.postcodesioApplication();
 
 describe("Filter method", function() {

@@ -253,7 +253,7 @@ For the exact changes, you can may inspect the most recent commit applied to the
 
 ## 4.0.0 (23/2/2017)
 - Incorporate OS Places dataset
-- npm package now points to `app.js` which exports instance postcodes.io express app
+- npm package now points to `app.ts` which exports instance postcodes.io express app
 - Minimum advised required Postgresql version of 9.5 (due to backwards incompatible pg_dump)
 - Updated latest pg_dump for Feb 2017 ONSPD, January 2017 OS Places data
 

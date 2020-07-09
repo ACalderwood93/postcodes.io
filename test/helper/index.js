@@ -7,10 +7,11 @@ const configFactory = require("../../dist/config/config");
 const config = configFactory();
 const AttributeBaseSuite = require("./attribute_base.suite.js");
 
+console.log(require, require("../../dist/app"));
 const postcodesioApplication = (cfg) => require("../../dist/app")(cfg || config);
 
 // Load models
-const { Base, Postcode, TerminatedPostcode } = require("../../dist/app/models/index.js");
+const { Base, Postcode, TerminatedPostcode } = require("../../dist/app/models/index");
 
 // Infers columns schema from columnData
 const inferSchemaData = columnData => {
