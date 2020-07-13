@@ -1,30 +1,27 @@
 "use strict";
 
 const { assert } = require("chai");
-const helper = require("./helper/index.js");
-const {
-  PostcodesioHttpError,
-  InvalidJsonError,
-  NotFoundError,
-} = helper.errors;
+const helper = require("./helper/index");
+const { PostcodesioHttpError, InvalidJsonError, NotFoundError } = helper.errors;
 
 describe("Errors", () => {
   describe("PostcodesioHttpError", () => {
-    it ("instantiates with default attributes", () => {
+    it("instantiates with default attributes", () => {
       const e = new PostcodesioHttpError();
+      console.log(e);
       assert.equal(e.name, "PostcodesioHttpError");
       assert.equal(e.status, 500);
       assert.include(e.humanMessage, "500 Server Error");
       assert.include(e.message, "500 Server Error");
     });
-    it ("instantiates with correct attributes", () => {
+    it("instantiates with correct attributes", () => {
       const code = 401;
       const msg = "Foo";
       const e = new PostcodesioHttpError(code, msg);
       assert.equal(e.status, code);
       assert.equal(e.humanMessage, msg);
     });
-    it ("has toJSON method", () => {
+    it("has toJSON method", () => {
       const e = new PostcodesioHttpError();
       const result = e.toJSON();
       assert.equal(result.status, e.status);
@@ -33,7 +30,7 @@ describe("Errors", () => {
   });
 
   describe("InvalidJsonError", () => {
-    it ("instantiates with correct attributes", () => {
+    it("instantiates with correct attributes", () => {
       const e = new InvalidJsonError();
       assert.equal(e.status, 400);
       assert.include(e.humanMessage, "Invalid JSON submitted");
@@ -41,7 +38,7 @@ describe("Errors", () => {
   });
 
   describe("NotFoundError", () => {
-    it ("instantiates with correct attributes", () => {
+    it("instantiates with correct attributes", () => {
       const e = new NotFoundError();
       assert.equal(e.status, 404);
       assert.include(e.humanMessage, "Resource not found");

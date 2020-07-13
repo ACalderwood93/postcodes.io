@@ -13,13 +13,12 @@ const main = async () => {
     console.log("Rebuilding outcodes table");
     await setupOutcodeTable();
     console.log("Done");
-		console.log("Completed rebuild");
-		process.exit(0);
+    console.log("Completed rebuild");
+    process.exit(0);
   } catch (e) {
-		console.log("An error occurred:", error);
-		process.exit(1);
+    console.log("An error occurred:", error);
+    process.exit(1);
   }
 };
 
 main();
-

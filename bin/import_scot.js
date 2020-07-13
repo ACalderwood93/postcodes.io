@@ -19,7 +19,7 @@ Type 'YES' to continue
 
 const prompt = require("prompt");
 const { series } = require("async");
-const { ScottishPostcode } = require("../dist/app/models/index.js");
+const { ScottishPostcode } = require("../dist/app/models");
 
 if (!sourceDirectory) {
   console.log("Aborting Import. No source directory specified");
@@ -42,7 +42,7 @@ prompt.get([{ message, name: "confirmation" }], (error, result) => {
   const start = process.hrtime();
 
   console.log("Importing postcodes...");
-  ScottishPostcode._setupTable(sourceDirectory, error => {
+  ScottishPostcode._setupTable(sourceDirectory, (error) => {
     if (error) {
       console.log(
         "Unable to complete import process due to error:",

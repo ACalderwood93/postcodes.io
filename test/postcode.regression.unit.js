@@ -2,11 +2,11 @@
 
 const async = require("async");
 const assert = require("chai").assert;
-const helper = require("./helper/index.js");
+const helper = require("./helper/index");
 const Postcode = helper.Postcode;
 
-describe("Postcode data regression testing", function() {
-  before(function(done) {
+describe("Postcode data regression testing", function () {
+  before(function (done) {
     this.timeout(0);
     async.series([helper.clearPostcodeDb, helper.seedPostcodeDb], done);
   });
@@ -14,7 +14,7 @@ describe("Postcode data regression testing", function() {
   after(helper.clearPostcodeDb);
 
   // Ordinary case
-  it("contains correct data for AB123BS", done => {
+  it("contains correct data for AB123BS", (done) => {
     Postcode.find("AB123BS", (error, result) => {
       if (error) return done(error);
       delete result.id;
@@ -62,7 +62,7 @@ describe("Postcode data regression testing", function() {
     });
   });
 
-  it("returns correct data for SE1P5ZZ", done => {
+  it("returns correct data for SE1P5ZZ", (done) => {
     Postcode.find("SE1P5ZZ", (error, result) => {
       if (error) return done(error);
       delete result.id;
@@ -112,7 +112,7 @@ describe("Postcode data regression testing", function() {
 
   // Case: Does not contain geolocation
   // https://github.com/ideal-postcodes/postcodes.io/issues/197
-  it("contains correct data for JE24WD", done => {
+  it("contains correct data for JE24WD", (done) => {
     Postcode.find("JE24WD", (error, result) => {
       if (error) return done(error);
       delete result.id;

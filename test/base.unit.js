@@ -2,17 +2,17 @@
 
 const helper = require("./helper");
 const { assert } = require("chai");
-const { Base, csvExtractor } = require("../dist/app/models/base.js");
+const { Base, csvExtractor } = require("../src/app/models/base");
 const spdSchemaLarge = require("../data/spd_large_schema.json");
 const spdSchemaSmall = require("../data/spd_small_schema.json");
 const onspdSchema = require("../data/onspd_schema.json");
 
-describe("Base model", function() {
-  describe("Base model instance methods", function() {
-    describe("#_query", function() {
-      it("should execute a query", function(done) {
+describe("Base model", function () {
+  describe("Base model instance methods", function () {
+    describe("#_query", function () {
+      it("should execute a query", function (done) {
         const base = new Base();
-        base._query("SELECT * FROM pg_tables", function(error, result) {
+        base._query("SELECT * FROM pg_tables", function (error, result) {
           if (error) return done(error);
           assert.isArray(result.rows);
           done();
@@ -21,36 +21,36 @@ describe("Base model", function() {
     });
   });
 
-  describe("CRUD methods", function() {
+  describe("CRUD methods", function () {
     var customRelation;
 
-    before(function(done) {
+    before(function (done) {
       customRelation = helper.getCustomRelation();
       customRelation._createRelation(done);
     });
 
-    after(function(done) {
+    after(function (done) {
       customRelation._destroyRelation(done);
     });
 
-    describe("#_create", function() {
-      it("should return an error if property no in schema", function(done) {
+    describe("#_create", function () {
+      it("should return an error if property no in schema", function (done) {
         customRelation._create(
           {
             bogus: "bogusfield",
           },
-          function(error, result) {
+          function (error, result) {
             assert.match(error.message, /Could not create record/);
             done();
           }
         );
       });
-      it("should create a new record", function(done) {
+      it("should create a new record", function (done) {
         customRelation._create(
           {
             somefield: "unique",
           },
-          function(error, result) {
+          function (error, result) {
             if (error) return done(error);
             done();
           }
@@ -58,11 +58,11 @@ describe("Base model", function() {
       });
     });
 
-    describe("#all", function() {
-      it("should return list of all records", function(done) {
-        customRelation.all(function(error, result) {
+    describe("#all", function () {
+      it("should return list of all records", function (done) {
+        customRelation.all(function (error, result) {
           if (error) return done(error);
-          var containsUnique = result.rows.some(function(elem) {
+          var containsUnique = result.rows.some(function (elem) {
             return elem.somefield === "unique";
           });
           assert.isTrue(result.rows.length > 0);
@@ -73,58 +73,58 @@ describe("Base model", function() {
     });
   });
 
-  describe("#_createRelation", function() {
+  describe("#_createRelation", function () {
     var customRelation;
 
-    before(function() {
+    before(function () {
       customRelation = helper.getCustomRelation();
     });
 
-    it("should create a table with the right attributes", function(done) {
-      customRelation._createRelation(function(error, result) {
+    it("should create a table with the right attributes", function (done) {
+      customRelation._createRelation(function (error, result) {
         if (error) return done(error);
         done();
       });
     });
 
-    after(function(done) {
-      customRelation._destroyRelation(function(error, result) {
+    after(function (done) {
+      customRelation._destroyRelation(function (error, result) {
         if (error) return done(error)();
         done();
       });
     });
   });
 
-  describe("#_destroyRelation", function() {
+  describe("#_destroyRelation", function () {
     var customRelation;
 
-    before(function(done) {
+    before(function (done) {
       customRelation = helper.getCustomRelation();
-      customRelation._createRelation(function(error, result) {
+      customRelation._createRelation(function (error, result) {
         if (error) return done(error);
         done();
       });
     });
 
-    it("should delete the relation", function(done) {
-      customRelation._destroyRelation(function(error, result) {
+    it("should delete the relation", function (done) {
+      customRelation._destroyRelation(function (error, result) {
         if (error) return done(error);
         done();
       });
     });
   });
 
-  describe("#_csvSeed", done => {
+  describe("#_csvSeed", (done) => {
     let customRelation;
 
-    before(done => {
+    before((done) => {
       customRelation = helper.getCustomRelation();
       customRelation._createRelation(done);
     });
 
-    after(done => customRelation._destroyRelation(done));
+    after((done) => customRelation._destroyRelation(done));
 
-    it("should seed the relation table with data", done => {
+    it("should seed the relation table with data", (done) => {
       customRelation._csvSeed(
         {
           filepath: helper.seedPaths.customRelation,
@@ -134,7 +134,7 @@ describe("Base model", function() {
           if (error) return done(error);
           customRelation.all((error, data) => {
             if (error) return done(error);
-            var hasLorem = data.rows.some(function(elem) {
+            var hasLorem = data.rows.some(function (elem) {
               return elem.somefield === "Lorem";
             });
             assert.isTrue(hasLorem);
@@ -145,10 +145,10 @@ describe("Base model", function() {
     });
   });
 
-  describe("#clear", function(done) {
+  describe("#clear", function (done) {
     var customRelation;
 
-    before(done => {
+    before((done) => {
       customRelation = helper.getCustomRelation();
       customRelation._createRelation((error, result) => {
         if (error) return done(error);
@@ -169,12 +169,12 @@ describe("Base model", function() {
       });
     });
 
-    after(done => customRelation._destroyRelation(done));
+    after((done) => customRelation._destroyRelation(done));
 
-    it("should clear the table", function(done) {
-      customRelation.clear(function(error, result) {
+    it("should clear the table", function (done) {
+      customRelation.clear(function (error, result) {
         if (error) return done(error);
-        customRelation.all(function(error, data) {
+        customRelation.all(function (error, data) {
           if (error) return done(error);
           assert.equal(data.rows.length, 0);
           done();

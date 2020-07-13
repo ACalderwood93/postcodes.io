@@ -5,18 +5,18 @@ const {
   setupSupportTables,
   setupOutcodeTable,
   SUPPORT_TABLES,
-} = require("../dist/app/lib/setup");
+} = require("../src/app/lib/setup");
 const { series, parallel } = require("async");
 const {
   listDatabaseRelations,
   clearPostcodeDb,
   seedPostcodeDb,
   Outcode,
-} = require("./helper/index.js");
+} = require("./helper/index");
 
 const clearSupportTables = () => {
   return new Promise((resolve, reject) => {
-    const instructions = SUPPORT_TABLES.map(m => m._destroyRelation.bind(m));
+    const instructions = SUPPORT_TABLES.map((m) => m._destroyRelation.bind(m));
     parallel(instructions, (error, result) => {
       if (error) return reject(error);
       return resolve(result);
@@ -25,19 +25,16 @@ const clearSupportTables = () => {
 };
 
 describe("Setup methods", () => {
-	before(function (done) {
-		this.timeout(0);
-		series([
-			clearPostcodeDb,
-			seedPostcodeDb
-		], done);
-	});
+  before(function (done) {
+    this.timeout(0);
+    series([clearPostcodeDb, seedPostcodeDb], done);
+  });
 
-	after(clearPostcodeDb);
+  after(clearPostcodeDb);
 
   describe("setupSupportTables", () => {
     before(async () => {
-      await clearSupportTables()
+      await clearSupportTables();
     });
 
     after(async function () {
@@ -45,24 +42,24 @@ describe("Setup methods", () => {
       await setupSupportTables();
     });
 
-    it ("creates support tables", async function () {
+    it("creates support tables", async function () {
       this.timeout(0);
-      const existing = await listDatabaseRelations();   
-      SUPPORT_TABLES.forEach(( { relation } ) => {
+      const existing = await listDatabaseRelations();
+      SUPPORT_TABLES.forEach(({ relation }) => {
         assert.isFalse(existing.rows.some(({ Name }) => Name === relation));
       });
       await setupSupportTables();
       const created = await listDatabaseRelations();
-      SUPPORT_TABLES.forEach(( { relation } ) => {
+      SUPPORT_TABLES.forEach(({ relation }) => {
         assert.isTrue(created.rows.some(({ Name }) => Name === relation));
       });
     });
   });
 
   describe("setupOutcodeTable", () => {
-    before(done => Outcode._destroyRelation(done));
-    
-    it ("creates outcode table", async () => {
+    before((done) => Outcode._destroyRelation(done));
+
+    it("creates outcode table", async () => {
       const existing = await listDatabaseRelations();
       assert.isFalse(existing.rows.some(({ Name }) => Name === "outcodes"));
       await setupOutcodeTable();
@@ -71,4 +68,3 @@ describe("Setup methods", () => {
     });
   });
 });
-

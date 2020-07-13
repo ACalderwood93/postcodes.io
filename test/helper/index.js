@@ -3,18 +3,21 @@
 const { inherits } = require("util");
 const { join } = require("path");
 const randomString = require("random-string");
-const configFactory = require("../../dist/config/config");
+const configFactory = require("../../src/config/config");
 const config = configFactory();
-const AttributeBaseSuite = require("./attribute_base.suite.js");
+const AttributeBaseSuite = require("./attribute_base.suite");
 
-console.log(require, require("../../dist/app"));
-const postcodesioApplication = (cfg) => require("../../dist/app")(cfg || config);
+const postcodesioApplication = (cfg) => require("../../src/app")(cfg || config);
 
 // Load models
-const { Base, Postcode, TerminatedPostcode } = require("../../dist/app/models/index");
+const {
+  Base,
+  Postcode,
+  TerminatedPostcode,
+} = require("../../src/app/models/index");
 
 // Infers columns schema from columnData
-const inferSchemaData = columnData => {
+const inferSchemaData = (columnData) => {
   const columnName = columnData.column_name;
   const collationName = columnData.collation_name;
 
@@ -54,7 +57,7 @@ const sortByIndexColumns = (a, b) => {
 
 // infers expected definition of javascript object that defines creation of an index
 // for #createIndexes method
-const inferIndexInfo = indexDef => {
+const inferIndexInfo = (indexDef) => {
   const impliedIndex = {};
 
   if (indexDef.search("UNIQUE") !== -1) {
@@ -83,9 +86,9 @@ const inferIndexInfo = indexDef => {
 };
 
 // Location with nearby postcodes to be used in lonlat test requests
-const locationWithNearbyPostcodes = function(callback) {
+const locationWithNearbyPostcodes = function (callback) {
   const postcodeWithNearbyPostcodes = "AB14 0LP";
-  Postcode.find(postcodeWithNearbyPostcodes, function(error, result) {
+  Postcode.find(postcodeWithNearbyPostcodes, function (error, result) {
     if (error) return callback(error, null);
     return callback(null, result);
   });
@@ -113,7 +116,7 @@ function getCustomRelation() {
 }
 
 //Generates a random integer from 1 to max inclusive
-const getRandom = max => Math.ceil(Math.random() * max);
+const getRandom = (max) => Math.ceil(Math.random() * max);
 
 const QueryTerminatedPostcode = `
 	SELECT
@@ -137,25 +140,25 @@ function randomTerminatedPostcode(callback) {
   );
 }
 
-const randomPostcode = callback => {
+const randomPostcode = (callback) => {
   Postcode.random((error, { postcode }) => {
     callback(error, postcode);
   });
 };
 
-const randomOutcode = callback => {
+const randomOutcode = (callback) => {
   return Postcode.random((error, { outcode }) => {
     callback(error, outcode);
   });
 };
 
-const randomLocation = callback => {
+const randomLocation = (callback) => {
   return Postcode.random((error, { longitude, latitude }) => {
     callback(error, { longitude, latitude });
   });
 };
 
-const lookupRandomPostcode = callback => {
+const lookupRandomPostcode = (callback) => {
   Postcode.random((error, result) => {
     if (error) {
       throw error;
@@ -170,10 +173,10 @@ module.exports = {
   config,
 
   // Methods
-  ...require("./setup.js"),
+  ...require("./setup"),
 
   // HTTP Helpers
-  ...require("./http.js"),
+  ...require("./http"),
 
   removeDiacritics: require("./remove_diacritics"),
   inferIndexInfo,
@@ -188,22 +191,22 @@ module.exports = {
   locationWithNearbyPostcodes,
 
   // Type checking methods
-  ...require("./type_checking.js"),
+  ...require("./type_checking"),
 
   // PG helper methods
-  ...require("./pg.js"),
+  ...require("./pg"),
 
   // Test suites
   AttributeBaseSuite,
 
   // Libs
-  unaccent: require("../../dist/app/lib/unaccent.js"),
-  errors: require("../../dist/app/lib/errors.js"),
-  string: require("../../dist/app/lib/string.js"),
-  timeout: require("../../dist/app/lib/timeout.js"),
+  unaccent: require("../../src/app/lib/unaccent"),
+  errors: require("../../src/app/lib/errors"),
+  string: require("../../src/app/lib/string"),
+  timeout: require("../../src/app/lib/timeout"),
 
   // Load in models
-  ...require("../../dist/app/models/index.js"),
+  ...require("../../src/app/models/index"),
 
   seedPaths: {
     customRelation: join(__dirname, "../seed/customRelation.csv"),

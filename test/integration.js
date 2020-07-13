@@ -8,13 +8,7 @@ const app = postcodesioApplication();
 describe("Pages routes", () => {
   describe("/", async () => {
     it("should return 200", async () => {
-      await request(app)
-        .get("/")
-        .expect(200)
-        .expect("Content-Type", /html/)
-        .then(function(res) {
-          console.log(res);
-        });
+      await request(app).get("/").expect(200).expect("Content-Type", /html/);
     });
   });
 
@@ -59,9 +53,7 @@ describe("Errors", () => {
 
 describe("Misc", () => {
   it("should return a favicon", async () => {
-    await request(app)
-      .get("/favicon.ico")
-      .expect(200);
+    await request(app).get("/favicon.ico").expect(200);
   });
 });
 
@@ -82,17 +74,13 @@ describe("Serve static assets", () => {
     const config = configFactory();
     config.serveStaticAssets = true;
     const newApp = postcodesioApplication(config);
-    await request(newApp)
-      .get("/js/app.ts")
-      .expect(200);
+    await request(newApp).get("/js/app.ts").expect(200);
   });
   it("does not serve public/ when disabled", async () => {
     const config = configFactory();
     config.serveStaticAssets = false;
     const newApp = postcodesioApplication(config);
-    const response = await request(newApp)
-      .get("/js/app.ts")
-      .expect(404);
+    const response = await request(newApp).get("/js/app.ts").expect(404);
   });
 });
 

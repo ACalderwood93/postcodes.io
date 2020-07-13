@@ -2,7 +2,7 @@
  * PG helper methods
  */
 
-const { Base } = require("../../dist/app/models/index.js");
+const { Base } = require("../../src/app/models/index");
 
 // Credit: https://www.peterbe.com/plog/select-all-relations-in-postgresql
 const databaseRelationsQuery = `
@@ -30,7 +30,7 @@ const databaseRelationsQuery = `
  * @param cb
  * @returns {undefined}
  */
-const listDatabaseRelations = cb => {
+const listDatabaseRelations = (cb) => {
   if (cb) return Base.prototype._query(databaseRelationsQuery, cb);
   return new Promise((resolve, reject) => {
     Base.prototype._query(databaseRelationsQuery, (error, result) => {
@@ -65,12 +65,11 @@ const databaseIndexesQuery = `
 `;
 
 // Lists indexes in database
-const listDatabaseIndexes = cb => {
-	Base.prototype._query(databaseIndexesQuery, cb);
+const listDatabaseIndexes = (cb) => {
+  Base.prototype._query(databaseIndexesQuery, cb);
 };
 
 module.exports = {
   listDatabaseRelations,
   listDatabaseIndexes,
 };
-

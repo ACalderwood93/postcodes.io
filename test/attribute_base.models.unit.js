@@ -1,4 +1,4 @@
-const helper = require("./helper/index.js");
+const helper = require("./helper/index");
 
 [
   "Ccg",
@@ -11,5 +11,5 @@ const helper = require("./helper/index.js");
   "Parish",
   "Ward",
 ]
-  .map(name => helper[name])
-  .forEach(model => helper.AttributeBaseSuite.rigCoreSpecs(model));
+  .map((name) => helper[name])
+  .forEach((model) => helper.AttributeBaseSuite.rigCoreSpecs(model));

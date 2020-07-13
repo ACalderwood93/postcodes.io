@@ -11,16 +11,16 @@
     "copy": "ts-node tools/copy",
     "semantic-release": "semantic-release",
     "build": "npm-run-all clean tsc copy",
-    "test": "npm run build && npm run test:create && npm run nyc_mocha",
+    "test": "npm run test:create && npm run nyc_mocha",
     "nyc_mocha": "NODE_ENV=test NO_RELOAD_DB=true nyc mocha",
     "coverage": "codecov",
     "start": "node dist/server.js",
-    "setup": "./bin/setup.sh",
-    "rebuild_support_tables": "./bin/rebuild_support_tables.js",
-    "setup_test_db": "NODE_ENV=test ./bin/setup_test.sh",
-    "test:seed": "NODE_ENV=test ./bin/generate_test_data.js",
-    "test:create": "NODE_ENV=test ./bin/createTestDb.sh",
-    "test:clear": "NODE_ENV=test ./bin/clearTestDb.sh",
+    "setup": "bin/setup.sh",
+    "rebuild_support_tables": "bin/rebuild_support_tables.js",
+    "setup_test_db": "NODE_ENV=test bin/setup_test.sh",
+    "test:seed": "NODE_ENV=test bin/generate_test_data.js",
+    "test:create": "NODE_ENV=test bin/createTestDb.sh",
+    "test:clear": "NODE_ENV=test bin/clearTestDb.sh",
     "tsc": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "ejs": "ejs-cli"
@@ -31,9 +31,9 @@
     "fullTrace": true
   },
   "bin": {
-    "postcodesio-onspd": "./bin/import.js",
-    "postcodesio-scotpd": "./bin/import_scot.js",
-    "postcodesio-oson": "./bin/import_oson.js"
+    "postcodesio-onspd": "bin/import.js",
+    "postcodesio-scotpd": "bin/import_scot.js",
+    "postcodesio-oson": "bin/import_oson.js"
   },
   "repository": {
     "type": "git",
@@ -56,16 +56,28 @@
     "url": "https://github.com/ideal-postcodes/postcodes.io/issues"
   },
   "nyc": {
+    "cache": false,
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "dist/*",
+      "**/*.d.ts"
+    ],
+    "extension": [
+      ".js",
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
     "reporter": [
       "text-summary",
-      "lcov",
       "html"
     ],
-    "all": true,
-    "include": [
-      "app",
-      "config"
-    ]
+    "all": true
   },
   "release": {
     "extends": "@cablanchard/semantic-release"

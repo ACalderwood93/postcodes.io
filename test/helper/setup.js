@@ -22,7 +22,7 @@ const {
   Place,
   TerminatedPostcode,
   Ced,
-} = require("../../dist/app/models/index.js");
+} = require("../../src/app/models/index");
 
 /**
  * Clears the test database
@@ -30,7 +30,7 @@ const {
  * @param  {function} callback
  * @return {undefined}
  */
-const clearTestDb = callback => {
+const clearTestDb = (callback) => {
   if (process.env.PRESERVE_DB !== undefined) return callback(null);
   async.parallel(
     [
@@ -47,24 +47,24 @@ const clearTestDb = callback => {
       Outcode,
       Place,
       Ced,
-    ].map(m => m._destroyRelation.bind(m)),
+    ].map((m) => m._destroyRelation.bind(m)),
     callback
   );
 };
 
-const seedTerminatedPostcodeDb = callback => {
+const seedTerminatedPostcodeDb = (callback) => {
   if (NO_RELOAD_DB) return callback(null);
   TerminatedPostcode._setupTable(seedPostcodePath, callback);
 };
 
-const seedPostcodeDb = callback => {
+const seedPostcodeDb = (callback) => {
   if (NO_RELOAD_DB) return callback(null);
   async.series(
     [
-      cb => Postcode._setupTable(seedPostcodePath, cb),
-      cb => TerminatedPostcode._setupTable(seedPostcodePath, cb),
-      cb => Place._setupTable(seedPlacesPath, cb),
-      cb => ScottishPostcode._setupTable(seedScotlandPostcodePath, cb),
+      (cb) => Postcode._setupTable(seedPostcodePath, cb),
+      (cb) => TerminatedPostcode._setupTable(seedPostcodePath, cb),
+      (cb) => Place._setupTable(seedPlacesPath, cb),
+      (cb) => ScottishPostcode._setupTable(seedScotlandPostcodePath, cb),
     ].concat(
       [
         District,
@@ -77,36 +77,36 @@ const seedPostcodeDb = callback => {
         Ward,
         Outcode,
         Ced,
-      ].map(m => m._setupTable.bind(m))
+      ].map((m) => m._setupTable.bind(m))
     ),
     callback
   );
 };
 
 // Clear terminated onspd table
-const clearTerminatedPostcodesDb = callback => {
+const clearTerminatedPostcodesDb = (callback) => {
   if (NO_RELOAD_DB) return callback(null);
   TerminatedPostcode._destroyRelation(callback);
 };
 
 // Clear ONSPD table
-const clearPostcodeDb = callback => {
+const clearPostcodeDb = (callback) => {
   if (NO_RELOAD_DB) return callback(null);
   Postcode._destroyRelation(callback);
 };
 
 // Clear SPD Table
-const clearScottishPostcodeDb = callback => {
+const clearScottishPostcodeDb = (callback) => {
   if (NO_RELOAD_DB) return callback(null);
   ScottishPostcode._destroyRelation(callback);
 };
 
-const seedScottishPostcodeDb = callback => {
+const seedScottishPostcodeDb = (callback) => {
   if (NO_RELOAD_DB) return callback(null);
   async.series(
     [
-      cb => ScottishPostcode._setupTable(seedScotlandPostcodePath, cb),
-      cb => ScottishConstituency._setupTable(cb),
+      (cb) => ScottishPostcode._setupTable(seedScotlandPostcodePath, cb),
+      (cb) => ScottishConstituency._setupTable(cb),
     ],
     callback
   );
