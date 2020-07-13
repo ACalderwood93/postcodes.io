@@ -1,6 +1,5 @@
-"use strict";
-
-const { defaults } = require("../../config/config")();
+import config from "../../config/config";
+const { defaults } = config();
 
 const DEFAULT_STATUS_CODE = 500;
 const DEFAULT_MESSAGE = `500 Server Error.
@@ -10,18 +9,21 @@ Alternatively submit an issue at https://github.com/ideal-postcodes/postcodes.io
 
 /**
  * Returns an API error which can be parsed by renderer
- * @extends Error
  */
-class PostcodesioHttpError extends Error {
-  /**
-   * @param {number} status - HTTP status code
-   * @param {string} humanMessage - Error message to be returned to client
-   */
-  constructor(status, humanMessage) {
+export class PostcodesioHttpError extends Error {
+  //  HTTP status code
+  public status: number;
+  //  Error message to be returned to client
+  public humanMessage: string;
+
+  constructor(status?: number, humanMessage?: string) {
     status = status || DEFAULT_STATUS_CODE;
     humanMessage = humanMessage || DEFAULT_MESSAGE;
     const message = `PostcodesIO HTTP Error: ${status} ${humanMessage}`;
     super(message);
+    // Set the prototype explicitly
+    // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+    Object.setPrototypeOf(this, PostcodesioHttpError.prototype);
     this.name = this.constructor.name;
     this.status = status;
     this.humanMessage = humanMessage;
@@ -30,12 +32,11 @@ class PostcodesioHttpError extends Error {
 
   /**
    * Returns JSON response which can be parsed by interpreter
-   * @returns {Object}
    */
   toJSON() {
     return {
       status: this.status,
-      error: this.humanMessage
+      error: this.humanMessage,
     };
   }
 }
@@ -45,31 +46,31 @@ You need to submit a JSON object with an array of postcodes or geolocation objec
 Also ensure that Content-Type is set to application/json
 `;
 
-class InvalidJsonError extends PostcodesioHttpError {
+export class InvalidJsonError extends PostcodesioHttpError {
   constructor() {
     super(400, INVALID_JSON_MESSAGE);
   }
 }
 
-class NotFoundError extends PostcodesioHttpError {
+export class NotFoundError extends PostcodesioHttpError {
   constructor() {
     super(404, "Resource not found");
   }
 }
 
-class InvalidPostcodeError extends PostcodesioHttpError {
+export class InvalidPostcodeError extends PostcodesioHttpError {
   constructor() {
     super(404, "Invalid postcode");
   }
 }
 
-class PostcodeNotFoundError extends PostcodesioHttpError {
+export class PostcodeNotFoundError extends PostcodesioHttpError {
   constructor() {
     super(404, "Postcode not found");
   }
 }
 
-class PostcodeNotInSpdError extends PostcodesioHttpError {
+export class PostcodeNotInSpdError extends PostcodesioHttpError {
   constructor() {
     super(404, "Postcode exists in ONSPD but not in SPD");
   }
@@ -79,13 +80,13 @@ You need to submit a JSON object with an array of postcodes or geolocation objec
 Also ensure that Content-Type is set to application/json
 `;
 
-class InvalidJsonQueryError extends PostcodesioHttpError {
+export class InvalidJsonQueryError extends PostcodesioHttpError {
   constructor() {
     super(400, INVALID_JSON_QUERY_MESSAGE);
   }
 }
 
-class JsonArrayRequiredError extends PostcodesioHttpError {
+export class JsonArrayRequiredError extends PostcodesioHttpError {
   constructor() {
     super(400, "Invalid data submitted. You need to provide a JSON array");
   }
@@ -94,7 +95,7 @@ class JsonArrayRequiredError extends PostcodesioHttpError {
 const MAX_GEOLOCATIONS = defaults.bulkGeocode.geolocations.MAX;
 const MAX_GEOLOCATIONS_MESSAGE = `Too many locations submitted. Up to ${MAX_GEOLOCATIONS} locations can be bulk requested at a time`;
 
-class ExceedMaxGeolocationsError extends PostcodesioHttpError {
+export class ExceedMaxGeolocationsError extends PostcodesioHttpError {
   constructor() {
     super(400, MAX_GEOLOCATIONS_MESSAGE);
   }
@@ -103,13 +104,13 @@ class ExceedMaxGeolocationsError extends PostcodesioHttpError {
 const MAX_POSTCODES = defaults.bulkLookups.postcodes.MAX;
 const MAX_POSTCODES_MESSAGE = `Too many postcodes submitted. Up to ${MAX_POSTCODES} postcodes can be bulk requested at a time`;
 
-class ExceedMaxPostcodesError extends PostcodesioHttpError {
+export class ExceedMaxPostcodesError extends PostcodesioHttpError {
   constructor() {
     super(400, MAX_POSTCODES_MESSAGE);
   }
 }
 
-class PostcodeQueryRequiredError extends PostcodesioHttpError {
+export class PostcodeQueryRequiredError extends PostcodesioHttpError {
   constructor() {
     super(
       400,
@@ -118,65 +119,44 @@ class PostcodeQueryRequiredError extends PostcodesioHttpError {
   }
 }
 
-class InvalidGeolocationError extends PostcodesioHttpError {
+export class InvalidGeolocationError extends PostcodesioHttpError {
   constructor() {
     super(400, "Invalid longitude/latitude submitted");
   }
 }
 
-class InvalidLimitError extends PostcodesioHttpError {
+export class InvalidLimitError extends PostcodesioHttpError {
   constructor() {
     super(400, "Invalid result limit submitted");
   }
 }
 
-class InvalidRadiusError extends PostcodesioHttpError {
+export class InvalidRadiusError extends PostcodesioHttpError {
   constructor() {
     super(400, "Invalid lookup radius submitted");
   }
 }
 
-class TPostcodeNotFoundError extends PostcodesioHttpError {
+export class TPostcodeNotFoundError extends PostcodesioHttpError {
   constructor() {
     super(404, "Terminated postcode not found");
   }
 }
 
-class PlaceNotFoundError extends PostcodesioHttpError {
+export class PlaceNotFoundError extends PostcodesioHttpError {
   constructor() {
     super(404, "Place not found");
   }
 }
 
-class InvalidQueryError extends PostcodesioHttpError {
+export class InvalidQueryError extends PostcodesioHttpError {
   constructor() {
     super(400, "No valid query submitted. Remember to include every parameter");
   }
 }
 
-class OutcodeNotFoundError extends PostcodesioHttpError {
+export class OutcodeNotFoundError extends PostcodesioHttpError {
   constructor() {
     super(404, "Outcode not found");
   }
 }
-
-module.exports = {
-  PostcodesioHttpError,
-  InvalidJsonError,
-  NotFoundError,
-  InvalidPostcodeError,
-  PostcodeNotFoundError,
-  PostcodeNotInSpdError,
-  InvalidJsonQueryError,
-  JsonArrayRequiredError,
-  ExceedMaxGeolocationsError,
-  ExceedMaxPostcodesError,
-  PostcodeQueryRequiredError,
-  InvalidGeolocationError,
-  InvalidLimitError,
-  InvalidRadiusError,
-  TPostcodeNotFoundError,
-  PlaceNotFoundError,
-  InvalidQueryError,
-  OutcodeNotFoundError
-};

@@ -1,8 +1,6 @@
-"use strict";
-
-const { assert } = require("chai");
-const helper = require("./helper/index");
-const { PostcodesioHttpError, InvalidJsonError, NotFoundError } = helper.errors;
+import { assert } from "chai";
+import { errors } from "./helper/index";
+const { PostcodesioHttpError, InvalidJsonError, NotFoundError } = errors;
 
 describe("Errors", () => {
   describe("PostcodesioHttpError", () => {
@@ -14,6 +12,7 @@ describe("Errors", () => {
       assert.include(e.humanMessage, "500 Server Error");
       assert.include(e.message, "500 Server Error");
     });
+
     it("instantiates with correct attributes", () => {
       const code = 401;
       const msg = "Foo";
@@ -21,6 +20,7 @@ describe("Errors", () => {
       assert.equal(e.status, code);
       assert.equal(e.humanMessage, msg);
     });
+
     it("has toJSON method", () => {
       const e = new PostcodesioHttpError();
       const result = e.toJSON();
