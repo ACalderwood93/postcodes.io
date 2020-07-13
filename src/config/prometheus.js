@@ -14,7 +14,7 @@ const promClient = {
 
 const paths = [
   [
-    `^/postcodes/(lat|lon)/\\d+(\\.\\d+)?/(lat|lon)/\\d+(\\.\\d+)?$`,
+    "^/postcodes/(lat|lon)/\\d+(\\.\\d+)?/(lat|lon)/\\d+(\\.\\d+)?$",
     "/postcodes/lon/:lon/lat/:lat",
   ],
   ["^/postcodes/[^/]+$", "/postcodes/:postcode"],
@@ -32,7 +32,7 @@ const paths = [
  *
  * e.g. /postcodes/sw1a2aa -> /postcodes/:postcode
  */
-const normalizePath = request => {
+const normalizePath = (request) => {
   for (const [regex, path] of paths) {
     if (regex.test(request.path)) return path;
   }

@@ -19,32 +19,39 @@ describe("Scottish Postcode Model", () => {
   const testPostcodeLarge = "ML11 0GH";
   const testPostcodeSmall = "G82 1JW";
 
-  before(function(done) {
+  before(function (done) {
     this.timeout(0);
+    console.log("setup");
     series([clearPostcodeDb, seedPostcodeDb], done);
   });
 
   after(clearPostcodeDb);
 
   describe("#setupTable", () => {
-    before(function(done) {
+    before(function (done) {
       this.timeout(0);
-      ScottishPostcode._destroyRelation(error => {
+      console.log("setupTable");
+      ScottishPostcode._destroyRelation((error) => {
+        console.log("_destroyRelation", error);
         if (error) return done(error);
         ScottishPostcode._setupTable(seedFilePath, done);
       });
     });
 
-    after(function(done) {
+    beforeEach((done) => {
+      console.log("test");
+    });
+
+    after(function (done) {
       this.timeout(0);
-      ScottishPostcode._destroyRelation(error => {
+      ScottishPostcode._destroyRelation((error) => {
         if (error) return done(error);
         ScottishPostcode._setupTable(seedFilePath, done);
       });
     });
 
     describe("#_createRelation", () => {
-      it(`creates a relation that matches ${ScottishPostcode.relation} schema`, done => {
+      it(`creates a relation that matches ${ScottishPostcode.relation} schema`, (done) => {
         const query = `
           SELECT 
             column_name, data_type, character_maximum_length, collation_name
@@ -54,7 +61,7 @@ describe("Scottish Postcode Model", () => {
         ScottishPostcode._query(query, (error, result) => {
           if (error) return done(error);
           const impliedSchema = {};
-          result.rows.forEach(columnInfo => {
+          result.rows.forEach((columnInfo) => {
             let columnName, dataType;
             [columnName, dataType] = inferSchemaData(columnInfo);
             impliedSchema[columnName] = dataType;
@@ -66,7 +73,7 @@ describe("Scottish Postcode Model", () => {
     });
 
     describe("#seedData", () => {
-      it("loads correct data from data directory", done => {
+      it("loads correct data from data directory", (done) => {
         const query = `SELECT count(*) FROM ${ScottishPostcode.relation}`;
         ScottishPostcode._query(query, (error, result) => {
           if (error) return done(error);
@@ -100,7 +107,7 @@ describe("Scottish Postcode Model", () => {
   });
 
   describe("#find", () => {
-    it("should return postcode with the right attributes for large user", done => {
+    it("should return postcode with the right attributes for large user", (done) => {
       ScottishPostcode.find(testPostcodeLarge, (error, result) => {
         if (error) return done(error);
         assert.deepEqual(result, {
@@ -114,7 +121,7 @@ describe("Scottish Postcode Model", () => {
       });
     });
 
-    it("should return postcode with the right attributes for small users", done => {
+    it("should return postcode with the right attributes for small users", (done) => {
       ScottishPostcode.find(testPostcodeSmall, (error, result) => {
         if (error) return done(error);
         assert.deepEqual(result, {
@@ -128,7 +135,7 @@ describe("Scottish Postcode Model", () => {
       });
     });
 
-    it("should return null for null/undefined postcode search", done => {
+    it("should return null for null/undefined postcode search", (done) => {
       ScottishPostcode.find(null, (error, result) => {
         if (error) return done(error);
         assert.isNull(result);
@@ -136,7 +143,7 @@ describe("Scottish Postcode Model", () => {
       });
     });
 
-    it("returns null if invalid postcode", done => {
+    it("returns null if invalid postcode", (done) => {
       ScottishPostcode.find("1", (error, result) => {
         if (error) return done(error);
         assert.isNull(result);
@@ -144,7 +151,7 @@ describe("Scottish Postcode Model", () => {
       });
     });
 
-    it("should be insensitive to space", done => {
+    it("should be insensitive to space", (done) => {
       ScottishPostcode.find(
         testPostcodeLarge.replace(/\s/, ""),
         (error, result) => {
@@ -155,7 +162,7 @@ describe("Scottish Postcode Model", () => {
       );
     });
 
-    it("should return null if postcode does not exist", done => {
+    it("should return null if postcode does not exist", (done) => {
       ScottishPostcode.find("ID11QD", (error, result) => {
         if (error) return done(error);
         assert.isNull(result);

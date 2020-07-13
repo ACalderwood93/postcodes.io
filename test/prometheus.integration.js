@@ -48,19 +48,31 @@ describe("Prometheus /metrics endpoint", () => {
       request(app).get("/metrics").expect(401).end(done);
     });
 
-    const testMetric = async (url, expectedMetric) => {
-      const response = await generateMetric(url);
-      const { text } = await getMetrics();
-      assert.notInclude(text, url);
-      assert.include(text, expectedMetric);
+    const testMetric = (url, expectedMetric) => {
+      return new Promise(async (resolve) => {
+        const response = await generateMetric(url);
+        const { text } = await getMetrics();
+        assert.notInclude(text, url);
+        assert.include(text, expectedMetric);
+        return resolve();
+      });
     };
 
     /**
      * Generates metric for URL, swallows any error
      */
-    const generateMetric = async (url) => {
-      const response = await request(app).get(url);
-      return response;
+    const generateMetric = (url) => {
+      return new Promise(async (resolve) => {
+        try {
+          const response = await request(app).get(url);
+          resolve(response);
+        } catch (error) {
+          console.log(process.env, error);
+          // When database is not instantiated,
+          // requesting data will generally return errors like 404
+          resolve(error);
+        }
+      });
     };
 
     describe("URL normalisation", () => {
