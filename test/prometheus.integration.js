@@ -67,7 +67,7 @@ describe("Prometheus /metrics endpoint", () => {
           const response = await request(app).get(url);
           resolve(response);
         } catch (error) {
-          console.log(process.env, error);
+          console.log(error);
           // When database is not instantiated,
           // requesting data will generally return errors like 404
           resolve(error);
