@@ -20,15 +20,9 @@ Type 'YES' to continue
 
 const prompt = require("prompt");
 const { forEach, series } = require("async");
-const { Postcode, TerminatedPostcode, Outcode } = require("../dist/app/models");
-const {
-  toTempName,
-  setupWithTableSwap,
-} = require("../dist/app/models/base.js");
-const {
-  SUPPORT_TABLES,
-  setupSupportTables,
-} = require("../dist/app/lib/setup.js");
+const { Postcode, TerminatedPostcode, Outcode } = require("../app/models");
+const { toTempName, setupWithTableSwap } = require("../app/models/base");
+const { SUPPORT_TABLES, setupSupportTables } = require("../app/lib/setup");
 
 if (!sourceFile) {
   console.log("Aborting Import. No source file specified");

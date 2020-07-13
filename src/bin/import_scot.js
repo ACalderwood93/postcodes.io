@@ -19,7 +19,7 @@ Type 'YES' to continue
 
 const prompt = require("prompt");
 const { series } = require("async");
-const { ScottishPostcode } = require("../dist/app/models");
+const { ScottishPostcode } = require("../app/models");
 
 if (!sourceDirectory) {
   console.log("Aborting Import. No source directory specified");

@@ -28,7 +28,7 @@ exports.configure = ({ log }) => {
   return logger;
 };
 
-const selectTarget = file => {
+const selectTarget = (file) => {
   if (file === undefined) return destination();
   const output = file.toLowerCase();
   if (output === "stdout") return destination();

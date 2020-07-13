@@ -9,7 +9,7 @@ const server = app.listen(port);
 
 const closeSocket = (_, socket) => {
   if (!socket.destroyed) socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
-}
+};
 server.on("clientError", closeSocket);
 server.on("connect", closeSocket);
 

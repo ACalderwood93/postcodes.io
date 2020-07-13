@@ -7,12 +7,11 @@ const {
   InvalidPostcodeError,
   PostcodeNotFoundError,
   PostcodeNotInSpdError,
-} = require("../lib/errors.js");
+} = require("../lib/errors");
 
 exports.show = (request, response, next) => {
   const { postcode } = request.params;
-  if (!Pc.isValid(postcode.trim()))
-    return next(new InvalidPostcodeError());
+  if (!Pc.isValid(postcode.trim())) return next(new InvalidPostcodeError());
 
   ScottishPostcode.find(postcode, (error, result) => {
     if (error) return next(error);

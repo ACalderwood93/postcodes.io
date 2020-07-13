@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-const {
-  setupSupportTables,
-  setupOutcodeTable,
-} = require("../dist/app/lib/setup.js");
+const { setupSupportTables, setupOutcodeTable } = require("../app/lib/setup");
 
 const main = async () => {
   try {

@@ -16,7 +16,7 @@ const {
   InvalidGeolocationError,
   InvalidLimitError,
   InvalidRadiusError,
-} = require("../lib/errors.js");
+} = require("../lib/errors");
 
 exports.show = (request, response, next) => {
   const { postcode } = request.params;
@@ -81,13 +81,13 @@ const bulkGeocode = (request, response, next) => {
       if (!postcodes) return callback(null, { query: location, result: null });
       callback(null, {
         query: sanitizeQuery(location),
-        result: postcodes.map(postcode => Postcode.toJson(postcode)),
+        result: postcodes.map((postcode) => Postcode.toJson(postcode)),
       });
     });
   };
 
   const whitelist = ["limit", "longitude", "latitude", "radius", "widesearch"];
-  const sanitizeQuery = query => {
+  const sanitizeQuery = (query) => {
     const result = {};
     for (let attr in query) {
       if (whitelist.indexOf(attr.toLowerCase()) !== -1) {
@@ -169,7 +169,7 @@ exports.query = (request, response, next) => {
     if (error) return next(error);
     response.jsonApiResponse = {
       status: 200,
-      result: results ? results.map(elem => Postcode.toJson(elem)) : null,
+      result: results ? results.map((elem) => Postcode.toJson(elem)) : null,
     };
     return next();
   });
@@ -183,7 +183,7 @@ exports.autocomplete = (request, response, next) => {
     if (error) return next(error);
     response.jsonApiResponse = {
       status: 200,
-      result: !!results ? results.map(elem => elem.postcode) : null,
+      result: !!results ? results.map((elem) => elem.postcode) : null,
     };
     return next();
   });
@@ -216,7 +216,7 @@ const nearestPostcodes = (request, response, next) => {
 
   Postcode.nearestPostcodes(params, (error, results) => {
     if (error) return next(error);
-    const result = !!results ? results.map(pc => Postcode.toJson(pc)) : null;
+    const result = !!results ? results.map((pc) => Postcode.toJson(pc)) : null;
     response.jsonApiResponse = { status: 200, result };
     return next();
   });

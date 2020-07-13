@@ -17,7 +17,7 @@ const { parse, transform } = require("csv");
 const argv = require("minimist")(process.argv.slice(2));
 
 // Maps postcodes.io code types to ONSPD labels
-const onspdSchema = require("../data/onspd_schema.json");
+const onspdSchema = require("../../../data/onspd_schema.json");
 const codeTypeToOnspd = Object.freeze({
   nhsHa: "oshlthau",
   counties: "oscty",
@@ -69,7 +69,7 @@ const data = {};
 const missingData = {};
 codeTypes.forEach((codeType) => {
   missingData[codeType] = {};
-  data[codeType] = require(`../data/${codeType}.json`);
+  data[codeType] = require(`../../data/${codeType}.json`);
 });
 
 const check = (row, type) => {

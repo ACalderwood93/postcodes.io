@@ -19,7 +19,7 @@ function Base(relation, schema, indexes) {
   this.indexes = indexes;
 }
 
-Base.prototype._query = function(query, params, callback) {
+Base.prototype._query = function (query, params, callback) {
   if (typeof params === "function") {
     callback = params;
     params = [];
@@ -38,7 +38,7 @@ Base.prototype._query = function(query, params, callback) {
   });
 };
 
-Base.prototype._create = function(newRecord, callback) {
+Base.prototype._create = function (newRecord, callback) {
   const query = [`INSERT INTO ${this.relation}`];
   const cols = [];
   const values = [];
@@ -59,15 +59,15 @@ Base.prototype._create = function(newRecord, callback) {
   this._query(query.join(" "), values, callback);
 };
 
-Base.prototype.all = function(callback) {
+Base.prototype.all = function (callback) {
   this._query(`SELECT * FROM ${this.relation}`, callback);
 };
 
-Base.prototype.clear = function(callback) {
+Base.prototype.clear = function (callback) {
   this._query(`DELETE FROM ${this.relation}`, callback);
 };
 
-Base.prototype._createRelation = function(callback) {
+Base.prototype._createRelation = function (callback) {
   const query = [`CREATE TABLE IF NOT EXISTS ${this.relation}`];
   const columns = [];
   const schema = this.schema;
@@ -81,7 +81,7 @@ Base.prototype._createRelation = function(callback) {
   this._query(query.join(" "), callback);
 };
 
-Base.prototype._destroyRelation = function(callback) {
+Base.prototype._destroyRelation = function (callback) {
   this._query(`DROP TABLE IF EXISTS ${this.relation} CASCADE`, callback);
 };
 
@@ -108,16 +108,16 @@ const generateInstruction = (index, relation) => {
  * @param callback
  * @returns {undefined}
  */
-Base.prototype.createIndexes = function(callback) {
+Base.prototype.createIndexes = function (callback) {
   async.series(
     this.indexes
-      .map(index => generateInstruction(index, this.relation))
-      .map(instruction => cb => this._query(instruction, cb)),
+      .map((index) => generateInstruction(index, this.relation))
+      .map((instruction) => (cb) => this._query(instruction, cb)),
     callback
   );
 };
 
-Base.prototype._csvSeed = function(options, callback) {
+Base.prototype._csvSeed = function (options, callback) {
   let filepath = options.filepath;
   if (Array.isArray(options.filepath)) {
     filepath = options.filepath;
@@ -125,7 +125,7 @@ Base.prototype._csvSeed = function(options, callback) {
     filepath = [options.filepath];
   }
   const columns = options.columns;
-  const transform = options.transform || (row => row);
+  const transform = options.transform || ((row) => row);
   const query = `COPY ${this.relation} (${columns}) FROM STDIN DELIMITER ',' CSV`;
 
   async.eachLimit(
@@ -139,7 +139,7 @@ Base.prototype._csvSeed = function(options, callback) {
             done();
             return cb();
           })
-          .on("error", error => {
+          .on("error", (error) => {
             done();
             return cb(error);
           });
@@ -154,24 +154,24 @@ Base.prototype._csvSeed = function(options, callback) {
   );
 };
 
-Base.prototype._destroyAll = function(callback) {
+Base.prototype._destroyAll = function (callback) {
   if (process.env.NODE_ENV !== "test") {
     return callback(
       `Aborting. Tried to wipe database outside of testing environment`
     );
   }
 
-  this._query("drop schema public cascade", error => {
+  this._query("drop schema public cascade", (error) => {
     if (error) return callback(error, null);
     this._query("create public schema", callback);
   });
 };
 
-Base.prototype._getClient = function(callback) {
+Base.prototype._getClient = function (callback) {
   pool.connect(callback);
 };
 
-const dollarise = values => values.map((_, i) => `$${i + 1}`).join(", ");
+const dollarise = (values) => values.map((_, i) => `$${i + 1}`).join(", ");
 
 function populateLocation(callback) {
   /* jshint validthis: true */
@@ -200,7 +200,7 @@ function populateLocation(callback) {
  * @return {Function}
  */
 const setupWithTableSwap = (Model, sourceFile) => {
-  return callback => {
+  return (callback) => {
     const originalName = Model.relation;
     const tempName = toTempName(originalName);
     const archivedName = toArchiveName(originalName);
@@ -209,7 +209,7 @@ const setupWithTableSwap = (Model, sourceFile) => {
     Model.relation = tempName;
 
     const args = [
-      error => {
+      (error) => {
         if (error) return callback(error);
         // Restore model name
         Model.relation = originalName;
@@ -234,14 +234,14 @@ const setupWithTableSwap = (Model, sourceFile) => {
   };
 };
 
-const toTempName = name => `${name}_temp`;
-const toArchiveName = name => `${name}_archived`;
+const toTempName = (name) => `${name}_temp`;
+const toArchiveName = (name) => `${name}_archived`;
 
 /**
  * Returns a function that extracts a CSV value for a given code
  * @param schema - Defines where to find CSV value given code
  */
-const csvExtractor = schema => {
+const csvExtractor = (schema) => {
   const cache = {};
 
   /**
@@ -249,7 +249,7 @@ const csvExtractor = schema => {
    * @param  {string} code column code e.g. `pcd`
    * @return {number}
    */
-  const indexFor = code => {
+  const indexFor = (code) => {
     if (cache[code] !== undefined) return cache[code];
     cache[code] = schema.reduce((result, elem, i) => {
       if (elem.code === code) return i;

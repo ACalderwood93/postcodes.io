@@ -15,12 +15,12 @@
     "nyc_mocha": "NODE_ENV=test NO_RELOAD_DB=true nyc mocha",
     "coverage": "codecov",
     "start": "node dist/server.js",
-    "setup": "bin/setup.sh",
-    "rebuild_support_tables": "bin/rebuild_support_tables.js",
-    "setup_test_db": "NODE_ENV=test bin/setup_test.sh",
-    "test:seed": "NODE_ENV=test bin/generate_test_data.js",
-    "test:create": "NODE_ENV=test bin/createTestDb.sh",
-    "test:clear": "NODE_ENV=test bin/clearTestDb.sh",
+    "setup": "dist/bin/setup.sh",
+    "rebuild_support_tables": "dist/bin/rebuild_support_tables.js",
+    "setup_test_db": "NODE_ENV=test dist/bin/setup_test.sh",
+    "test:seed": "NODE_ENV=test dist/bin/generate_test_data.js",
+    "test:create": "NODE_ENV=test dist/bin/createTestDb.sh",
+    "test:clear": "NODE_ENV=test dist/bin/clearTestDb.sh",
     "tsc": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "ejs": "ejs-cli"
@@ -30,7 +30,7 @@
       "ts",
       "js"
     ],
-    "reporter": "dot",
+    "reporter": "spec",
     "exit": true,
     "fullTrace": true,
     "require": [
@@ -39,9 +39,9 @@
     ]
   },
   "bin": {
-    "postcodesio-onspd": "bin/import.js",
-    "postcodesio-scotpd": "bin/import_scot.js",
-    "postcodesio-oson": "bin/import_oson.js"
+    "postcodesio-onspd": "src/bin/import.js",
+    "postcodesio-scotpd": "src/bin/import_scot.js",
+    "postcodesio-oson": "src/bin/import_oson.js"
   },
   "repository": {
     "type": "git",

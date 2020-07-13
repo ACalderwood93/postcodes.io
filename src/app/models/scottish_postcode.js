@@ -45,7 +45,7 @@ const foreignColumns = [
 const toJoinString = () => {
   return relationships
     .map(
-      r =>
+      (r) =>
         `LEFT OUTER JOIN ${r.table} ON ${TABLE_NAME}.${r.key}=${r.table}.${r.foreignKey}`
     )
     .join(" ");
@@ -65,14 +65,14 @@ const findQuery = `
 `;
 
 const SPD_COL_MAPPINGS = Object.freeze([
-  { column: "postcode", method: row => row.extract("Postcode") },
+  { column: "postcode", method: (row) => row.extract("Postcode") },
   {
     column: "pc_compact",
-    method: row => row.extract("Postcode").replace(/\s/g, ""),
+    method: (row) => row.extract("Postcode").replace(/\s/g, ""),
   },
   {
     column: "scottish_constituency_id",
-    method: row => row.extract("ScottishParliamentaryConstituency2014Code"),
+    method: (row) => row.extract("ScottishParliamentaryConstituency2014Code"),
   },
 ]);
 
@@ -117,13 +117,13 @@ class ScottishPostcode extends Base {
     this._csvSeed(
       {
         filepath,
-        transform: row => {
-          row.extract = code => extractor(row, code);
+        transform: (row) => {
+          row.extract = (code) => extractor(row, code);
           if (row.extract("Postcode") === "Postcode") return null; // Skip if header
           if (row.extract("DateOfDeletion").length !== 0) return null; // Skip row if terminated
-          return SPD_COL_MAPPINGS.map(elem => elem.method(row));
+          return SPD_COL_MAPPINGS.map((elem) => elem.method(row));
         },
-        columns: SPD_COL_MAPPINGS.map(elem => elem.column).join(","),
+        columns: SPD_COL_MAPPINGS.map((elem) => elem.column).join(","),
       },
       callback
     );
@@ -136,13 +136,13 @@ class ScottishPostcode extends Base {
       [
         this._createRelation.bind(this),
         this.clear.bind(this),
-        cb =>
+        (cb) =>
           this.seedPostcodes.call(
             this,
             { filepath: largeUserFile, extractor: largeUserExtractor },
             cb
           ),
-        cb =>
+        (cb) =>
           this.seedPostcodes.call(
             this,
             { filepath: smallUserFile, extractor: smallUserExtractor },

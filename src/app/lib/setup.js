@@ -15,7 +15,7 @@ const SUPPORT_TABLES = [
   "Parish",
   "Ward",
   "ScottishConstituency",
-].map(name => models[name]);
+].map((name) => models[name]);
 
 /**
  * Generates support tables in DB
@@ -24,10 +24,13 @@ const SUPPORT_TABLES = [
  */
 const setupSupportTables = () => {
   return new Promise((resolve, reject) => {
-    series(SUPPORT_TABLES.map(m => m._setupTable.bind(m)), (error, result) => {
-      if (error) return reject(error);
-      return resolve(result);
-    });
+    series(
+      SUPPORT_TABLES.map((m) => m._setupTable.bind(m)),
+      (error, result) => {
+        if (error) return reject(error);
+        return resolve(result);
+      }
+    );
   });
 };
 

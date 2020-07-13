@@ -1,7 +1,7 @@
 "use strict";
 
 const Place = require("../models/place");
-const { PlaceNotFoundError, InvalidQueryError } = require("../lib/errors.js");
+const { PlaceNotFoundError, InvalidQueryError } = require("../lib/errors");
 
 exports.show = (request, response, next) => {
   const { id } = request.params;
@@ -53,7 +53,7 @@ const searchPlace = (request, response, next) => {
     if (!places) return returnEmptyResponse(response, next);
     response.jsonApiResponse = {
       status: 200,
-      result: places.map(p => Place.toJson(p)),
+      result: places.map((p) => Place.toJson(p)),
     };
     return next();
   });

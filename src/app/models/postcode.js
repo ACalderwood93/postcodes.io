@@ -4,7 +4,9 @@ const { inherits } = require("util");
 const Pc = require("postcode");
 const { series } = require("async");
 const { Base, populateLocation, csvExtractor } = require("./base");
-const extractOnspdVal = csvExtractor(require("../../../data/onspd_schema.json"));
+const extractOnspdVal = csvExtractor(
+  require("../../../data/onspd_schema.json")
+);
 const QueryStream = require("pg-query-stream");
 const { defaults } = require("../../config/config.js")();
 const { InvalidGeolocationError } = require("../lib/errors");
@@ -106,7 +108,7 @@ const relationships = [
 
 const toJoinString = () => {
   return relationships
-    .map(r => {
+    .map((r) => {
       return `
 			LEFT OUTER JOIN ${r.table}
 				ON postcodes.${r.key}=${r.table}.${r.foreignKey}
@@ -160,7 +162,7 @@ const foreignColumns = [
 
 const toColumnsString = () => {
   return foreignColumns
-    .map(elem => {
+    .map((elem) => {
       return `${elem.field} as ${elem.as}`;
     })
     .join(",");
@@ -182,7 +184,7 @@ const findQuery = `
 	WHERE pc_compact=$1
 `;
 
-Postcode.prototype.find = function(postcode, callback) {
+Postcode.prototype.find = function (postcode, callback) {
   if (typeof postcode !== "string") return callback(null, null);
   postcode = postcode.trim().toUpperCase();
   if (!new Pc(postcode).valid()) return callback(null, null);
@@ -193,7 +195,7 @@ Postcode.prototype.find = function(postcode, callback) {
   });
 };
 
-Postcode.prototype.getForeignColNames = function() {
+Postcode.prototype.getForeignColNames = function () {
   return foreignColumns.reduce((acc, curr) => {
     acc.push(curr.as);
     return acc;
@@ -227,7 +229,7 @@ Postcode.prototype.whitelistedAttributes = [
   "ced",
 ];
 
-Postcode.prototype.loadPostcodeIds = function(type, callback) {
+Postcode.prototype.loadPostcodeIds = function (type, callback) {
   if (typeof type === "function") {
     callback = type;
     type = "_all";
@@ -263,7 +265,7 @@ Postcode.prototype.loadPostcodeIds = function(type, callback) {
           cleanUp(null, idStore);
         })
         .on("error", cleanUp)
-        .on("data", data => {
+        .on("data", (data) => {
           idStore[i] = data.id;
           i++;
         });
@@ -271,7 +273,7 @@ Postcode.prototype.loadPostcodeIds = function(type, callback) {
   });
 };
 
-Postcode.prototype.random = function(options, callback) {
+Postcode.prototype.random = function (options, callback) {
   if (typeof options === "function") {
     callback = options;
     options = {};
@@ -304,7 +306,7 @@ const findByIdQuery = `
 
 // Use an in memory array of IDs to retrieve random postcode
 
-Postcode.prototype.randomFromIds = function(ids, callback) {
+Postcode.prototype.randomFromIds = function (ids, callback) {
   const length = ids.length;
   const randomId = ids[Math.floor(Math.random() * length)];
   this._query(findByIdQuery, [randomId], (error, result) => {
@@ -316,7 +318,7 @@ Postcode.prototype.randomFromIds = function(ids, callback) {
 
 // Parses postcode search options, returns object with limit
 
-const parseSearchOptions = options => {
+const parseSearchOptions = (options) => {
   let limit = parseInt(options.limit, 10);
   if (isNaN(limit) || limit < 1) limit = defaults.search.limit.DEFAULT;
   if (limit > defaults.search.limit.MAX) limit = defaults.search.limit.MAX;
@@ -333,13 +335,13 @@ const parseSearchOptions = options => {
 
 const whitespaceRe = /\s+/g;
 
-Postcode.prototype.search = function(options, callback) {
+Postcode.prototype.search = function (options, callback) {
   const postcode = options.postcode.toUpperCase().trim();
   const pcCompact = postcode.replace(whitespaceRe, "");
 
   // Returns substring matches on postcode
-  const extractPartialMatches = r => {
-    return r.filter(r => r.pc_compact.includes(pcCompact));
+  const extractPartialMatches = (r) => {
+    return r.filter((r) => r.pc_compact.includes(pcCompact));
   };
 
   // Inspects results for partial matches
@@ -362,7 +364,7 @@ Postcode.prototype.search = function(options, callback) {
     if (error) return callback(error, null);
     const matches = extractPartialMatches(result.rows);
     if (matches.length === 0) return callback(null, null);
-    const exactMatches = matches.filter(r => r.pc_compact === pcCompact);
+    const exactMatches = matches.filter((r) => r.pc_compact === pcCompact);
     if (exactMatches.length > 0) return callback(null, exactMatches);
     return callback(null, matches);
   };
@@ -395,7 +397,7 @@ const searchQuery = `
 `;
 
 // Space sensitive search for postcode (uses postcode column/btree)
-Postcode.prototype.searchPostcode = function(options, callback) {
+Postcode.prototype.searchPostcode = function (options, callback) {
   const postcode = options.query;
   const limit = parseSearchOptions(options).limit;
   this._query(searchQuery, [postcode, limit], callback);
@@ -415,7 +417,7 @@ const pccompactSearchQuery = `
 `;
 
 // Space insensitive search for postcode (uses pc_compact column/btree)
-Postcode.prototype.searchPcCompact = function(options, callback) {
+Postcode.prototype.searchPcCompact = function (options, callback) {
   const postcode = options.query;
   const limit = parseSearchOptions(options).limit;
   this._query(pccompactSearchQuery, [postcode, limit], callback);
@@ -440,7 +442,7 @@ const nearestPostcodeQuery = `
 	LIMIT $4
 `;
 
-Postcode.prototype.nearestPostcodes = function(params, callback) {
+Postcode.prototype.nearestPostcodes = function (params, callback) {
   const DEFAULT_RADIUS = defaults.nearest.radius.DEFAULT;
   const MAX_RADIUS = defaults.nearest.radius.MAX;
   const DEFAULT_LIMIT = defaults.nearest.limit.DEFAULT;
@@ -501,7 +503,7 @@ const MAX_RANGE = 20000; // 20km
 const SEARCH_LIMIT = 10;
 const INCREMENT = 1000;
 
-Postcode.prototype._deriveMaxRange = function(params, callback) {
+Postcode.prototype._deriveMaxRange = function (params, callback) {
   const queryBound = (params, range, callback) => {
     const queryParams = [
       params.longitude,
@@ -622,7 +624,7 @@ const outcodeAttributes = [
   "admin_ward",
 ];
 
-Postcode.prototype.findOutcode = function(o, callback) {
+Postcode.prototype.findOutcode = function (o, callback) {
   const outcode = o.trim().toUpperCase();
 
   if (!Pc.validOutcode(outcode) && outcode !== "GIR") {
@@ -633,7 +635,7 @@ Postcode.prototype.findOutcode = function(o, callback) {
     if (error) return callback(error, null);
     if (result.rows.length === 0) return callback(null, null);
     const outcodeResult = result.rows[0];
-    outcodeAttributes.forEach(attr => {
+    outcodeAttributes.forEach((attr) => {
       if (outcodeResult[attr].length === 1 && outcodeResult[attr][0] === null) {
         outcodeResult[attr] = [];
       }
@@ -642,7 +644,7 @@ Postcode.prototype.findOutcode = function(o, callback) {
   });
 };
 
-Postcode.prototype.toJson = function(address) {
+Postcode.prototype.toJson = function (address) {
   return {
     postcode: address.postcode,
     quality: address.quality,
@@ -683,12 +685,12 @@ Postcode.prototype.toJson = function(address) {
   };
 };
 
-Postcode.prototype._setupTable = function(filepath, callback) {
+Postcode.prototype._setupTable = function (filepath, callback) {
   series(
     [
       this._createRelation.bind(this),
       this.clear.bind(this),
-      cb => this.seedPostcodes.call(this, filepath, cb),
+      (cb) => this.seedPostcodes.call(this, filepath, cb),
       this.populateLocation.bind(this),
       this.createIndexes.bind(this),
     ],
@@ -696,7 +698,7 @@ Postcode.prototype._setupTable = function(filepath, callback) {
   );
 };
 
-Postcode.prototype.seedPostcodes = function(filepath, callback) {
+Postcode.prototype.seedPostcodes = function (filepath, callback) {
   const pcts = require("../../../data/pcts.json");
   const lsoa = require("../../../data/lsoa.json");
   const msoa = require("../../../data/msoa.json");
@@ -706,61 +708,61 @@ Postcode.prototype.seedPostcodes = function(filepath, callback) {
   const european_registers = require("../../../data/european_registers.json");
 
   const ONSPD_COL_MAPPINGS = Object.freeze([
-    { column: "postcode", method: row => row.extract("pcds") },
+    { column: "postcode", method: (row) => row.extract("pcds") },
     {
       column: "pc_compact",
-      method: row => row.extract("pcds").replace(/\s/g, ""),
+      method: (row) => row.extract("pcds").replace(/\s/g, ""),
     },
-    { column: "eastings", method: row => row.extract("oseast1m") },
-    { column: "northings", method: row => row.extract("osnrth1m") },
+    { column: "eastings", method: (row) => row.extract("oseast1m") },
+    { column: "northings", method: (row) => row.extract("osnrth1m") },
     {
       column: "longitude",
-      method: row => {
+      method: (row) => {
         const eastings = row.extract("oseast1m");
         return eastings === "" ? null : row.extract("long");
       },
     },
     {
       column: "latitude",
-      method: row => {
+      method: (row) => {
         const northings = row.extract("osnrth1m");
         return northings === "" ? null : row.extract("lat");
       },
     },
-    { column: "country", method: row => countries[row.extract("ctry")] },
-    { column: "nhs_ha", method: row => nhsHa[row.extract("oshlthau")] },
-    { column: "admin_county_id", method: row => row.extract("oscty") },
-    { column: "admin_district_id", method: row => row.extract("oslaua") },
-    { column: "admin_ward_id", method: row => row.extract("osward") },
-    { column: "parish_id", method: row => row.extract("parish") },
-    { column: "quality", method: row => row.extract("osgrdind") },
-    { column: "constituency_id", method: row => row.extract("pcon") },
+    { column: "country", method: (row) => countries[row.extract("ctry")] },
+    { column: "nhs_ha", method: (row) => nhsHa[row.extract("oshlthau")] },
+    { column: "admin_county_id", method: (row) => row.extract("oscty") },
+    { column: "admin_district_id", method: (row) => row.extract("oslaua") },
+    { column: "admin_ward_id", method: (row) => row.extract("osward") },
+    { column: "parish_id", method: (row) => row.extract("parish") },
+    { column: "quality", method: (row) => row.extract("osgrdind") },
+    { column: "constituency_id", method: (row) => row.extract("pcon") },
     {
       column: "european_electoral_region",
-      method: row => european_registers[row.extract("eer")],
+      method: (row) => european_registers[row.extract("eer")],
     },
-    { column: "region", method: row => regions[row.extract("rgn")] },
-    { column: "primary_care_trust", method: row => pcts[row.extract("pct")] },
-    { column: "lsoa", method: row => lsoa[row.extract("lsoa11")] },
-    { column: "msoa", method: row => msoa[row.extract("msoa11")] },
-    { column: "nuts_id", method: row => row.extract("nuts") },
-    { column: "incode", method: row => row.extract("pcds").split(" ")[1] },
-    { column: "outcode", method: row => row.extract("pcds").split(" ")[0] },
-    { column: "ced_id", method: row => row.extract("ced") },
-    { column: "ccg_id", method: row => row.extract("ccg") },
+    { column: "region", method: (row) => regions[row.extract("rgn")] },
+    { column: "primary_care_trust", method: (row) => pcts[row.extract("pct")] },
+    { column: "lsoa", method: (row) => lsoa[row.extract("lsoa11")] },
+    { column: "msoa", method: (row) => msoa[row.extract("msoa11")] },
+    { column: "nuts_id", method: (row) => row.extract("nuts") },
+    { column: "incode", method: (row) => row.extract("pcds").split(" ")[1] },
+    { column: "outcode", method: (row) => row.extract("pcds").split(" ")[0] },
+    { column: "ced_id", method: (row) => row.extract("ced") },
+    { column: "ccg_id", method: (row) => row.extract("ccg") },
   ]);
 
   this._csvSeed(
     {
       filepath,
-      transform: row => {
-        row.extract = code => extractOnspdVal(row, code); // Append csv extraction logic
+      transform: (row) => {
+        row.extract = (code) => extractOnspdVal(row, code); // Append csv extraction logic
         if (row.extract("pcd") === "pcd") return null; // Skip if header
         if (row.extract("doterm") && row.extract("doterm").length !== 0)
           return null; // Skip row if terminated
-        return ONSPD_COL_MAPPINGS.map(elem => elem.method(row));
+        return ONSPD_COL_MAPPINGS.map((elem) => elem.method(row));
       },
-      columns: ONSPD_COL_MAPPINGS.map(elem => elem.column).join(","),
+      columns: ONSPD_COL_MAPPINGS.map((elem) => elem.column).join(","),
     },
     callback
   );

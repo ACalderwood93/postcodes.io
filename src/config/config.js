@@ -74,7 +74,7 @@ const config = {
   },
 };
 
-module.exports = env => {
+module.exports = (env) => {
   const environment = env || defaultEnv;
 
   const cfg = config[environment];

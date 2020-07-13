@@ -8,7 +8,7 @@ const postcodes = require("../app/controllers/postcodes_controller");
 const scottishPostcodes = require("../app/controllers/scottish_postcodes_controller");
 const terminatedPostcodes = require("../app/controllers/terminated_postcodes_controller");
 
-module.exports = app => {
+module.exports = (app) => {
   app.get("/", pages.home);
   app.get("/ping", utils.ping);
   app.get("/about", pages.about);

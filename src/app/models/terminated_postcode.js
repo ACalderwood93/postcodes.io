@@ -2,7 +2,9 @@
 
 const util = require("util");
 const { Base, populateLocation, csvExtractor } = require("./base");
-const extractOnspdVal = csvExtractor(require("../../../data/onspd_schema.json"));
+const extractOnspdVal = csvExtractor(
+  require("../../../data/onspd_schema.json")
+);
 const async = require("async");
 const Pc = require("postcode");
 
@@ -40,7 +42,7 @@ const findQuery = `
 	WHERE pc_compact=$1
 `;
 
-TerminatedPostcode.prototype.find = function(postcode, callback) {
+TerminatedPostcode.prototype.find = function (postcode, callback) {
   if (typeof postcode !== "string") return callback(null, null);
   postcode = postcode.trim().toUpperCase();
   if (!new Pc(postcode).valid()) return callback(null, null);
@@ -64,40 +66,40 @@ TerminatedPostcode.prototype.whitelistedAttributes = [
  * @param  {Object} terminatedPostcode - Raw instance of terminated postcode data
  * @return {Object}                    - Terminated postcode object containing only whitelisted attributes
  */
-TerminatedPostcode.prototype.toJson = function(terminatedPostcode) {
+TerminatedPostcode.prototype.toJson = function (terminatedPostcode) {
   return this.whitelistedAttributes.reduce((acc, attr) => {
     acc[attr] = terminatedPostcode[attr];
     return acc;
   }, {});
 };
 
-TerminatedPostcode.prototype.seedPostcodes = function(filepath, callback) {
+TerminatedPostcode.prototype.seedPostcodes = function (filepath, callback) {
   const ONSPD_COL_MAPPINGS = Object.freeze([
-    { column: "postcode", method: row => row.extract("pcds") },
+    { column: "postcode", method: (row) => row.extract("pcds") },
     {
       column: "pc_compact",
-      method: row => row.extract("pcds").replace(/\s/g, ""),
+      method: (row) => row.extract("pcds").replace(/\s/g, ""),
     },
     {
       column: "year_terminated",
-      method: row => row.extract("doterm").slice(0, 4),
+      method: (row) => row.extract("doterm").slice(0, 4),
     },
     {
       column: "month_terminated",
-      method: row => row.extract("doterm").slice(-2),
+      method: (row) => row.extract("doterm").slice(-2),
     },
-    { column: "eastings", method: row => row.extract("oseast1m") },
-    { column: "northings", method: row => row.extract("osnrth1m") },
+    { column: "eastings", method: (row) => row.extract("oseast1m") },
+    { column: "northings", method: (row) => row.extract("osnrth1m") },
     {
       column: "longitude",
-      method: row => {
+      method: (row) => {
         const eastings = row.extract("oseast1m");
         return eastings === "" ? null : row.extract("long");
       },
     },
     {
       column: "latitude",
-      method: row => {
+      method: (row) => {
         const northings = row.extract("osnrth1m");
         return northings === "" ? null : row.extract("lat");
       },
@@ -107,24 +109,24 @@ TerminatedPostcode.prototype.seedPostcodes = function(filepath, callback) {
   this._csvSeed(
     {
       filepath,
-      transform: row => {
+      transform: (row) => {
         if (row[0] === "pcd") return null; //ignore header
         if (row[4].length === 0) return null; // Skip if not terminated
-        row.extract = code => extractOnspdVal(row, code); // Append extraction
-        return ONSPD_COL_MAPPINGS.map(elem => elem.method(row));
+        row.extract = (code) => extractOnspdVal(row, code); // Append extraction
+        return ONSPD_COL_MAPPINGS.map((elem) => elem.method(row));
       },
-      columns: ONSPD_COL_MAPPINGS.map(elem => elem.column).join(","),
+      columns: ONSPD_COL_MAPPINGS.map((elem) => elem.column).join(","),
     },
     callback
   );
 };
 
-TerminatedPostcode.prototype._setupTable = function(filePath, callback) {
+TerminatedPostcode.prototype._setupTable = function (filePath, callback) {
   async.series(
     [
       this._createRelation.bind(this),
       this.clear.bind(this),
-      cb => this.seedPostcodes(filePath, cb),
+      (cb) => this.seedPostcodes(filePath, cb),
       this.populateLocation.bind(this),
       this.createIndexes.bind(this),
     ],
